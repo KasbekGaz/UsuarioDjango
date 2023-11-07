@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser, Obra, Gasto
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -21,3 +21,15 @@ class CustomUserSerializer(serializers.ModelSerializer):
             rol=validated_data['rol']
         )
         return user
+
+
+class ObraSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Obra
+        fields = '__all__'
+
+
+class GastoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gasto
+        fields = '__all__'
