@@ -1,13 +1,13 @@
 from rest_framework import generics, permissions
-from .models import CustomUser
-from .serializers import CustomUserSerializer
+from .models import CustomUser, Obra, Gasto
+from .serializers import CustomUserSerializer, ObraSerializer, GastoSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
 
 
-#! vistas
+#! vistas para USUARIO
 class CreateUserView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
@@ -43,3 +43,58 @@ class UserLogoutView(generics.DestroyAPIView):
         tokens = Token.objects.filter(user=user)
         tokens.delete()
         return Response({'message': 'Cierre de sesión exitoso'}, status=status.HTTP_204_NO_CONTENT)
+
+
+#! Vistas para OBRA
+class ObraViewSet(viewsets.ModelViewSet):
+    queryset = Obra.objects.all()
+    serializer_class = ObraSerializer
+
+    # * Definimos metodos HTTP permitidos en la vista
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+
+    # * logica para el manejo de roless
+
+    def create(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.rol == 'Admin':
+            # Lógica para crear un gasto (para usuarios Admin)
+            return super().create(request, *args, **kwargs)
+        else:
+            return Response({'detail': 'No tiene permiso para crear obras'}, status=status.HTTP_403_FORBIDDEN)
+
+    def update(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.rol == 'Admin':
+            # Lógica para actualizar un gasto (para usuarios Admin)
+            return super().update(request, *args, **kwargs)
+        else:
+            return Response({'detail': 'No tiene permiso para actualizar obras'}, status=status.HTTP_403_FORBIDDEN)
+
+    def partial_update(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.rol == 'Admin':
+            # Lógica para actualizar parcialmente un gasto (para usuarios Admin)
+            return super().partial_update(request, *args, **kwargs)
+        else:
+            return Response({'detail': 'No tiene permiso para actualizar obras'}, status=status.HTTP_403_FORBIDDEN)
+
+    def destroy(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.rol == 'Admin':
+            # Lógica para eliminar un gasto (para usuarios Admin)
+            return super().destroy(request, *args, **kwargs)
+        else:
+            return Response({'detail': 'No tiene permiso para eliminar obras'}, status=status.HTTP_403_FORBIDDEN)
+
+    def list(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.rol == 'Admin':
+            # Lógica para listar gastos (para usuarios Admin)
+            return super().list(request, *args, **kwargs)
+        elif request.user.is_authenticated and request.user.rol == 'Consul':
+            # Lógica para listar gastos (para usuarios Consul)
+            return super().list(request, *args, **kwargs)
+        else:
+            return Response({'detail': 'No tiene permiso para ver obras'}, status=status.HTTP_403_FORBIDDEN)
+
+
+#! Vistas para GASTO
+class GastoViewSet(viewsets.ModelViewSet):
+    queryset = Gasto.objects.all()
+    serializer_class = GastoSerializer
