@@ -86,11 +86,14 @@ class ObraViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         if request.user.is_authenticated and request.user.rol == 'Admin':
             # Lógica para listar gastos (para usuarios Admin)
+            print('Listar obras para Admin')
             return super().list(request, *args, **kwargs)
         elif request.user.is_authenticated and request.user.rol == 'Consul':
             # Lógica para listar gastos (para usuarios Consul)
+            print('Listar obras para Consul')
             return super().list(request, *args, **kwargs)
         else:
+            print(f'Usuario no autorizado: {request.user}')
             return Response({'detail': 'No tiene permiso para ver obras'}, status=status.HTTP_403_FORBIDDEN)
 
 
