@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import { useNavigate } from "react-router-dom";
 
 
 
 export function LoginView() {
+
+    const navigate = useNavigate();
+
     const [userData, setUserData] = useState({
             username: '',
             password: '',
@@ -23,11 +26,15 @@ export function LoginView() {
         try {
             // ! Realizar la solicitud de registro al backend
             const response = await axios.post('http://127.0.0.1:8000/login/', userData);
-            console.log('Usuario registrado con éxito:', response.data);
+            console.log('Inicio de sesión exitoso. Token almacenado:', response.data.token);
 
+            // Almacenar el token en el localStorage
+            localStorage.setItem('token', response.data.token);
+
+            navigate('/obras');
 
           } catch (error) {
-            console.error('Error al registrar usuario:', error);
+            console.error('Error al iniciar sesion:', error);
           }
     
     };
@@ -54,7 +61,6 @@ export function LoginView() {
                 <br />
                 <button type='submit' className="bg-green-500 text-white mb-2 py-2 px-6 rounded-md hover:bg-green-700"> Entrar </button>
                 <br />
-                <a href=""> Olvidaste la contraseña?</a>
             </form>
         </div>
     </div>

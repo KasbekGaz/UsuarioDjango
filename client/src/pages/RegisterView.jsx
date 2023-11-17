@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom'
 
 const RegisterView = () => {
+
+    const navigate = useNavigate();
+
+
     const [userData, setUserData] = useState({
         username: '',
         password: '',
         email: '',
         telefono: '',
-        rol: '',
+        rol: 'Consul',
     });
 
     const handleChange = (e) => {
@@ -20,19 +24,24 @@ const RegisterView = () => {
 
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        try {
-            // ! Realizar la solicitud de registro al backend
-            const response = await axios.post('http://127.0.0.1:8000/register/', userData);
-            console.log('Usuario registrado con éxito:', response.data);
-
-
-          } catch (error) {
-            console.error('Error al registrar usuario:', error);
-          }
+      e.preventDefault();
     
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/register/', userData);
+        console.log('Usuario registrado con éxito:', response.data);
+    
+        navigate('/login'); //! redirecciona a inicio de sesion
+    
+      } catch (error) {
+        console.error('Error al registrar usuario:', error);
+    
+        if (error.response) {
+          console.error('Respuesta del servidor:', error.response.data);
+        }
+      }
     };
+    
+    
     
 
     return (
@@ -68,9 +77,12 @@ const RegisterView = () => {
               <br />
               <label className="block mb-2">
                 Rol:
-                <select name="rol" value={userData.rol} onChange={handleChange} className="w-full border rounded-md py-2 px-3 mt-1">
-                  <option value="Admin">Administrador</option>
-                  <option value="Consul">Consultor</option>
+                <select 
+                name="rol" 
+                value={userData.rol} 
+                onChange={handleChange} className="w-full border rounded-md py-2 px-3 mt-1">
+                  <option value="Admin">Admin</option>
+                  <option value="Consul">Consul</option>
                 </select>
               </label>
               <br />
