@@ -18,6 +18,7 @@ const RegisterView = () => {
         })
     };
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
@@ -25,11 +26,14 @@ const RegisterView = () => {
             // ! Realizar la solicitud de registro al backend
             const response = await axios.post('http://127.0.0.1:8000/register/', userData);
             console.log('Usuario registrado con éxito:', response.data);
+
+
           } catch (error) {
             console.error('Error al registrar usuario:', error);
           }
     
     };
+    
 
     return (
         <div  className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -49,7 +53,7 @@ const RegisterView = () => {
               <br />
               <label className="block mb-2">
                 Contraseña:
-                <input type="text" name="password" value={userData.password} onChange={handleChange} className="w-full border rounded-md py-2 px-3 mt-1" />
+                <input type="password" name="password" value={userData.password} onChange={handleChange} className="w-full border rounded-md py-2 px-3 mt-1" />
               </label>
               <br />
               <label className="block mb-2">
@@ -70,7 +74,7 @@ const RegisterView = () => {
                 </select>
               </label>
               <br />
-              <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-blue-700">Registrar</button>
+              <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-700">Registrar</button>
             </form>
           </div>
         </div>
